@@ -1,0 +1,50 @@
+
+
+body {
+    background: rgb(164, 163, 163);
+}
+
+
+div {
+}
+
+.custom-container {
+    border: 1px solid black;
+}
+/* NAV */
+#nav-container {
+    margin: 1%;
+    padding: 2% 0 0 0;
+}
+
+#user-input {
+
+}
+
+.search-btn {
+ margin: 0;
+}
+
+.input-btn {
+    background: gray;
+}
+
+/* RESULT LIST */
+#result-list {
+    position: relative;
+    list-style: none;
+    list-style-position: outside;
+}
+
+/* MAIN */
+#main-container {
+    display: flex;
+    justify-content: center;
+    margin: 1%;
+}
+
+.widget-container {
+    margin: 3% 0;
+    background: white;
+    border: 1px solid orange;
+}
