@@ -4,47 +4,36 @@ body {
     background: rgb(164, 163, 163);
 }
 
-
-div {
-}
-
 .custom-container {
     border: 1px solid black;
 }
+
 /* NAV */
-#nav-container {
-    margin: 1%;
-    padding: 2% 0 0 0;
+.search-div {
+    
 }
 
-#user-input {
+.user-search {
 
 }
 
 .search-btn {
- margin: 0;
+    cursor: pointer;
 }
 
-.input-btn {
-    background: gray;
-}
 
-/* RESULT LIST */
-#result-list {
-    position: relative;
+/* SEARCH RESULTS LIST */
+.search-results {
     list-style: none;
     list-style-position: outside;
 }
 
 /* MAIN */
-#main-container {
-    display: flex;
-    justify-content: center;
-    margin: 1%;
+.main-container {
+
 }
 
 .widget-container {
-    margin: 3% 0;
     background: white;
     border: 1px solid orange;
 }

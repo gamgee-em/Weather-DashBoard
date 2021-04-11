@@ -1,58 +1,63 @@
 console.log('js connected');
-let requestUrl = 'https://api.openweathermap.org/data/2.5/onecall?lat=39.9526&lon=75.1652&lang=en&appid=84d61ff029585a95fbd34cf405a10229';
-// CONTAINER
-let containerDiv = $('.custom-container');
-containerDiv.addClass('d-flex col-12');
-// NAV
-let navEl = $('nav');
-navEl.attr({
-    id: 'nav-container',
-    class: 'container d-flex custom-container row'
-});
-navEl.prepend('<input>');
-// MAIN
-let mainEl = $('main');
-// INPUT
-let searchInput = $('input');
-searchInput.attr({
-    type: 'text',
-    // USER INPUT SEARCH BAR
-    id: 'user-input',
-    class: 'col-9',
-    placeholder: 'Enter City'
-});
+ 
+let userSearch = $('#user-search');
+let searchBtn = $('#search-btn');
+let searchResults = $('#search-results');
+let ulEl = $('<ul>');
+let liEl = $('<li>');
+// use moment.js to get current Day/Date/Year/Time
+let getDate = moment().format('LLLL');
+// doc ready function
+$(document).ready(() => {
+    // use async await to avoid needing to use mulitple promise chains
+    // allows for more concise syntax 😍 
+    const getCoords = async(cityInput) => {
+        // concat cityInput w/ obj literal to url query
+        const coordsRequest = `http://api.openweathermap.org/data/2.5/weather?q=${cityInput}&appid=84d61ff029585a95fbd34cf405a10229`;
+        //use await to wait for a promise so rest of page can load while 
+        const coordsResponse = await fetch(coordsRequest);
+        const coordsData = await coordsResponse.json();
+        let coords = coordsData.coord;
+        let coordsObj = {
+            lat: coords.lat,
+            lon: coords.lon
+        };
+        console.log(coordsObj);
 
-// SEARCH BUTTON
-navEl.append($('<div>')
-.attr('class', 'container d-inline-flex search-btn col-2'));
-let searchBtn = $('.search-btn');
-searchBtn.append($('<span>').attr('class','d-flex justify-content-start input-btn btn row').text('Search'));
-let inputBtn = $('.input-btn');
-let resultList = [];
-navEl.append($('<ul>').attr('id','result-list'));
+        const oneCallRequest = `https://api.openweathermap.org/data/2.5/onecall?lat=${coordsObj.lat}&lon=${coordsObj.lon}&units=imperial&exclude=minutely,hourly,daily&appid=84d61ff029585a95fbd34cf405a10229`;
+        const oneCallResponse = await fetch(oneCallRequest);
+        const oneCallData = await oneCallResponse.json();
+        // deconstruct 'oneCallKey' to access the 'current' key in oneCallData
+        const oneCallKey = oneCallData.current;
+        console.log(oneCallKey)
+        const oneCallObj = {
+            windSpeed: oneCallKey.wind_speed,
+            humidity: oneCallKey.humidity,
+            temp: oneCallKey.temp,
+            uvi: oneCallKey.uvi
+        };
+        console.log(oneCallObj);
 
-// ON CLICK search button
-// show ul with search results in li
-searchBtn.on('click', function() {
-    if(resultList.length === 0) {
-    resultList = $('#result-list');
-    resultList.append($('<li>').text('it works!'));
+        // deconstruct 'oneCallKey' object to access 'weather' key in OneCallKey
+        const weatherKey = oneCallKey.weather[0];
+        const weatherObj = {
+            description: weatherKey.description,
+            icon: weatherKey.icon,
+            main: weatherKey.main
+        };
+        console.log(weatherObj);
+    };
 
-
-    console.log('user clicked search btn');
-    }
-})
-
-mainEl.attr('class','row container')
-mainEl.append($('<div>').attr('class', 'widget-container col-12'));
-
-// API REQUEST
-/* fetch(requestUrl)
-    .then(function (response) {
-      return response.json();
-    })
-    .then(function (data) {
-        console.log(data);
+    // ON CLICK search button event
+    // get userSearch value for coordsRequest API
+    searchBtn.on('click', () => {
+        let userInput = $(userSearch).val().toLowerCase().trim();
+        console.log(userInput);
+        // add class & append addChild <li>
+        searchResults.after((ulEl).addClass('list-group list-group-flush').append(liEl));
+        liEl.addClass('list-group-item pl-1').text(userInput);
+        //pass userInput to getCoords function and pass cityInput param into coordsRequest url query
+        getCoords(userInput);
     });
- */
-console.log(requestUrl);
+
+});
