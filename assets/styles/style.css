@@ -1,11 +1,11 @@
 
 
 body {
-    background: rgb(164, 163, 163);
+    background: rgb(172, 183, 189);
 }
 
-.custom-container {
-    border: 1px solid black;
+.container {
+
 }
 
 /* NAV */
@@ -31,9 +31,4 @@ body {
 /* MAIN */
 .main-container {
 
-}
-
-.widget-container {
-    background: white;
-    border: 1px solid orange;
 }

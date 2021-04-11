@@ -2,7 +2,7 @@ console.log('js connected');
  
 let userSearch = $('#user-search');
 let searchBtn = $('#search-btn');
-let searchResults = $('#search-results');
+searchBtn.addClass('bg-secondary').html('Search');
 let currentForecast = $('#current-forecast');
 let globalWeatherObj;
 let globalOneCallObj;
@@ -51,33 +51,55 @@ $(document).ready(() => {
             main: weatherKey.main
         };
         globalWeatherObj = weatherObj;
+        globalOneCallObj = oneCallObj;
         console.log(globalOneCallObj)
+
+        renderPage()
     };
+
+     function renderPage() {
+        // add class & append <li>
+        let searchResults = $('#search-results');
+
+        searchResults.append($('<ul>').addClass('list-group list-group-flush saved-search'));
+        //save value to localstorage later on
+        $('.saved-search').prepend($('<li>').addClass('list-group-item pl-1 city-name btn bg-secondary rounded').html(userResults));
+        // use toUpperCase on [0] index
+        currentForecast.append($('<ul>').attr({
+            id: 'current-forecast-list',
+            class: 'list-group list-group-flush'
+        }));
+
+        // recreate current weather card from dom
+        /* $('.search-area').append($('<div>').attr('class')) */
+
+        $('#current-forecast-list').append($('<h4>').attr('class','list-group-item pl-1 date').html(getDate));
+
+        $('#current-forecast-list').append($('<li>').attr('class', 'list-group-item pl-1 image').html(`${userResults}`));
+        // add icon need to fix position later
+        $('.image').append($('<img>').attr({
+            class: 'current-weather-icon',
+            src: `https://openweathermap.org/img/wn/${globalWeatherObj.icon}.png`,
+            alt: 'Weather icon representing the current weather'
+        }));
+
+        $('.current-weather-icon').after($('<p>').attr('class','pl-1').html(`Temp: ${globalOneCallObj.temp} <br> Humidity: ${globalOneCallObj.humidity}% <br> Wind Speed: ${globalOneCallObj.windSpeed}mph <br> UV Index: ${globalOneCallObj.uvi}`));
+
+    }
    // ON CLICK search button event
     // get userSearch value for coordsRequest API
     searchBtn.on('click', () => {
-        console.log(globalWeatherObj)
-        console.log(globalOneCallObj);
         // format user input for url query 
         // make userSearch value all lowercase and trim any white space 
         let userInput = $(userSearch).val().toLowerCase().trim();
         // take userInput and capitalize first character for display
         userResults = userInput.charAt(0).toUpperCase().concat(userInput.slice(1));
-
-        console.log(userResults);
-        // add class & append addChild <li>
-        searchResults.after((ulEl).addClass('list-group list-group-flush').append(liEl));
-        liEl.addClass('list-group-item pl-1').text(userResults);
-        // use toUpperCase on [0] index
-        currentForecast.text(userResults);
-        currentForecast.next().attr('id', 'current-forecast-list');
-        const currentForecastList = $('#current-forecast-list');
-        // add date using moment.js
-        currentForecastList.prepend($('<li>').attr('class','list-group-item pl-1').html(getDate));
-        // I need to be able to access the weatherObj & oneCallObj object keys & values
-/*         currentForecastList.append((liEl).html(oneCallObj.humidity));
- */        //pass userInput to getCoords function and pass city param into coordsRequest url query
+        // call getCoords and pass userInput in as a parameter
         getCoords(userInput);
     });
+    
+    function getLocalFunc() {
+
+    }
 
 });
