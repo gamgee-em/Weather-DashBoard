@@ -4,17 +4,21 @@ let userSearch = $('#user-search');
 let searchBtn = $('#search-btn');
 let searchResults = $('#search-results');
 let currentForecast = $('#current-forecast');
+let globalWeatherObj;
+let globalOneCallObj;
 let ulEl = $('<ul>');
 let liEl = $('<li>');
 // use moment.js to get current Day/Date/Year/Time
 let getDate = moment().format('LLLL');
+console.log(getDate)
 // doc ready function
 $(document).ready(() => {
+
     // use async await to avoid needing to use mulitple promise chains
     // allows for more concise syntax 😍 
-    const getCoords = async (cityInput) => {
+     async function getCoords(city) {
         // concat cityInput w/ obj literal to url query
-        const coordsRequest = `http://api.openweathermap.org/data/2.5/weather?q=${cityInput}&appid=84d61ff029585a95fbd34cf405a10229`;
+        const coordsRequest = `http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=84d61ff029585a95fbd34cf405a10229`;
         // combined varibales for single variable call I enjoy this syntax
         const coordsData = await (await fetch(coordsRequest)).json();
         let coords = coordsData.coord;
@@ -36,6 +40,7 @@ $(document).ready(() => {
             temp: oneCallKey.temp,
             uvi: oneCallKey.uvi
         };
+        globalOneCallObj = oneCallObj;
         console.log(oneCallObj);
 
         // deconstruct 'oneCallKey' object to access 'weather' key in OneCallKey
@@ -45,12 +50,14 @@ $(document).ready(() => {
             icon: weatherKey.icon,
             main: weatherKey.main
         };
-        console.log(weatherObj);
+        globalWeatherObj = weatherObj;
+        console.log(globalOneCallObj)
     };
-
-    // ON CLICK search button event
+   // ON CLICK search button event
     // get userSearch value for coordsRequest API
     searchBtn.on('click', () => {
+        console.log(globalWeatherObj)
+        console.log(globalOneCallObj);
         // format user input for url query 
         // make userSearch value all lowercase and trim any white space 
         let userInput = $(userSearch).val().toLowerCase().trim();
@@ -63,7 +70,13 @@ $(document).ready(() => {
         liEl.addClass('list-group-item pl-1').text(userResults);
         // use toUpperCase on [0] index
         currentForecast.text(userResults);
-        //pass userInput to getCoords function and pass cityInput param into coordsRequest url query
+        currentForecast.next().attr('id', 'current-forecast-list');
+        const currentForecastList = $('#current-forecast-list');
+        // add date using moment.js
+        currentForecastList.prepend($('<li>').attr('class','list-group-item pl-1').html(getDate));
+        // I need to be able to access the weatherObj & oneCallObj object keys & values
+/*         currentForecastList.append((liEl).html(oneCallObj.humidity));
+ */        //pass userInput to getCoords function and pass city param into coordsRequest url query
         getCoords(userInput);
     });
 
