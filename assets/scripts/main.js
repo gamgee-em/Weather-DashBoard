@@ -123,6 +123,11 @@ $(document).ready(() => {
             userResults = userInput.charAt(0).toUpperCase().concat(userInput.slice(1));
             // call getCoords and pass userInput in as a parameter
             getCoords(userInput);
+
+            searchBtn.on('click', () => {
+                /* $('.container').empty();
+ */
+            });
         });
     
     function getLocalFunc() {
