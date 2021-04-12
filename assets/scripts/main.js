@@ -6,6 +6,8 @@ searchBtn.addClass('bg-secondary').html('Search');
 let currentForecast = $('#current-forecast');
 // SEARCH RESULT LIST
 let searchResults = $('#search-results');
+$('.5-day-weather-card').addClass('hide');
+
 let globalWeatherObj;
 let globaloneCallCurrentObj;
 let ulEl = $('<ul>');
@@ -18,7 +20,6 @@ $(document).ready(() => {
     searchResults.append($('<ul>').addClass('list-group list-group-flush saved-search'));
     $('.saved-search').append($('<p>').addClass('list-group-item pl-1 city-name rounded'));
     $('.saved-search').html('Results:');
-
     // use async await to avoid needing to use mulitple promise chains
     // allows for more concise syntax 😍 
      async function getCoords(city) {
@@ -121,6 +122,8 @@ $(document).ready(() => {
     // ON CLICK search button event
         // get userSearch value for coordsRequest API
         searchBtn.on('click', () => {
+            $('.5-day-weather-card').removeClass('hide');
+
             // format user input for url query 
             // make userSearch value all lowercase and trim any white space 
             let userInput = $(userSearch).val().toLowerCase().trim();
@@ -130,8 +133,7 @@ $(document).ready(() => {
             getCoords(userInput);
 
             searchBtn.on('click', () => {
-                /* $('.container').empty();
- */
+
             });
         });
     
