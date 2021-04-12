@@ -18,12 +18,20 @@ let liEl = $('<li>');
 let getDate = moment().format('LLLL');
 console.log(getDate)
 
+$('.saved-search').append($('<p>').addClass('list-group-item pl-1 city-name rounded').html('Search History:'));
+
+$('.city-name').after($('<span>').attr({
+    type: 'button',
+    class: 'btn bg-secondary rounded history-btn'
+}).html(localStorage.getItem('location')));
+
+let historyBtn = $('history-btn');
+
+
 // doc ready function
 $(document).ready(() => {
-    //
-    $('.saved-search').append($('<p>').addClass('list-group-item pl-1 city-name rounded').html('Search History:'));
-    $('.city-name').after($('<button>').addClass('bg-secondary btn rounded history-btn').html(localStorage.getItem('location')));
-    let historyBtn = $('history-btn');
+    
+
     // use async await to avoid needing to use mulitple promise chains
     // allows for more concise syntax 😍 
      async function getCoords(city) {
@@ -91,20 +99,18 @@ $(document).ready(() => {
         // now i need to get local storage and append to
         function setlocalStor(getLocation) {
 
-            if (localStorage.length < 5) {
+            if (localStorage.length < 2) {
             localStorage.setItem('location',userResults);
-            } else {
-                console.log('hmmm')
-            }
+            } 
         }
         
         function getLocalStor() {
             const getLocation = localStorage.getItem('location')
             setlocalStor(getLocation);
-        }
-        
+         }
+        // call getLocalStor() to update value in search history when user refreshes page
         getLocalStor();
-
+ 
         $('.saved-search').prepend($('<p>').addClass('list-group-item pl-1 city-results rounded').html('Results:'));
         $('.city-results').after($('<button>').addClass('bg-secondary btn rounded').html(userResults));
     
@@ -139,24 +145,32 @@ $(document).ready(() => {
     }
     // ON CLICK search button event
     // get userSearch value for coordsRequest API
+
     searchBtn.on('click', () => {
         // hide current weather card & 5day forecast 
         $('.bg-primary').removeClass('hide');
-        
+
         // format user input for url query 
-        // make userSearch value all lowercase and trim any white space 
         let userInput = $(userSearch).val().toLowerCase().trim();
+        // make userSearch value all lowercase and trim any white space 
         // take userInput and capitalize first character for display
         userResults = userInput.charAt(0).toUpperCase().concat(userInput.slice(1));
         // call getCoords and pass userInput in as a parameter
         getCoords(userInput);
-
-        /* $('.clear-results').on('click', () => {
-            $('.container').empty();
-         
-        }); */
     });
 
+    //after search clear localstorage
+    $('.clear-results').on('click', () => {
+        localStorage.clear();
+        $('.history-btn').remove('.history-btn')
+    });
 
-
+    // HISTORY BUTTON EVENT
+    $('.history-btn').on('click', function() {
+        console.log('clicked history-btn')
+        userInput = localStorage.getItem('location');
+        userResults = userInput.charAt(0).toUpperCase().concat(userInput.slice(1));
+        $('.history-btn').removeClass('hide')
+        getCoords(userInput);
+    });
 });
