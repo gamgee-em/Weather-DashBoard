@@ -8,6 +8,8 @@ let currentForecast = $('#current-forecast');
 
 // SEARCH RESULT LIST
 let searchResults = $('#search-results');
+searchResults.append($('<ul>').addClass('list-group list-group-flush saved-search'));
+
 $('.bg-primary').addClass('hide');
 let ulEl = $('<ul>');
 let liEl = $('<li>');
@@ -18,9 +20,10 @@ console.log(getDate)
 
 // doc ready function
 $(document).ready(() => {
-    searchResults.append($('<ul>').addClass('list-group list-group-flush saved-search'));
-    $('.saved-search').append($('<p>').addClass('list-group-item pl-1 city-name rounded'));
-    $('.saved-search').html('Results:');
+    //
+    $('.saved-search').append($('<p>').addClass('list-group-item pl-1 city-name rounded').html('Search History:'));
+    $('.city-name').after($('<button>').addClass('bg-secondary btn rounded').html(localStorage.getItem('location')));
+
     // use async await to avoid needing to use mulitple promise chains
     // allows for more concise syntax 😍 
      async function getCoords(city) {
@@ -84,12 +87,27 @@ $(document).ready(() => {
     // build html
     function renderPage() {
         // LIST ITEMS / HISTORY
-        if (localStorage.length > 0) {
-            console.log('ls present');
-            console.log();
-            $('.saved-search').append($('<button>').addClass('bg-secondary btn rounded').html(userResults));
+        // this sets local storage 
+        // now i need to get local storage and append to
+        function setlocalStor(getLocation) {
+
+            if (getLocation == userResults) {
+            localStorage.setItem('location',userResults);
+            } else {
+                console.log('hmmm')
+            }
         }
-   
+        
+        function getLocalStor() {
+            const getLocation = localStorage.getItem('location')
+            setlocalStor(getLocation);
+        }
+        
+        getLocalStor();
+        
+        $('.saved-search').prepend($('<p>').addClass('list-group-item pl-1 city-results rounded').html('Results:'));
+        $('.city-results').after($('<button>').addClass('bg-secondary btn rounded').html(userResults));
+    
         currentForecast.append($('<h6>').attr({
             id: 'current-forecast-list',
             class: 'list-group list-group-flush'
@@ -119,28 +137,23 @@ $(document).ready(() => {
         $('.day4-weather').html(`Temps: ${globalOneCallDailyObj[4].temp.day}&degF <br> Humidity: ${globalOneCallDailyObj[4].humidity}`);
 
     }
-        // ON CLICK search button event
-        // get userSearch value for coordsRequest API
-        searchBtn.on('click', () => {
-            $('.bg-primary').removeClass('hide');
-            
-                let name = $(userSearch).val();
-                console.log(name)
-                
-                localStorage.setItem('location', name);     
-            
-            // format user input for url query 
-            // make userSearch value all lowercase and trim any white space 
-            let userInput = $(userSearch).val().toLowerCase().trim();
-            // take userInput and capitalize first character for display
-            userResults = userInput.charAt(0).toUpperCase().concat(userInput.slice(1));
-            // call getCoords and pass userInput in as a parameter
-            getCoords(userInput);
+    // ON CLICK search button event
+    // get userSearch value for coordsRequest API
+    searchBtn.on('click', () => {
+        // hide current weather card & 5day forecast 
+        $('.bg-primary').removeClass('hide');
+        
+        // format user input for url query 
+        // make userSearch value all lowercase and trim any white space 
+        let userInput = $(userSearch).val().toLowerCase().trim();
+        // take userInput and capitalize first character for display
+        userResults = userInput.charAt(0).toUpperCase().concat(userInput.slice(1));
+        // call getCoords and pass userInput in as a parameter
+        getCoords(userInput);
 
-            $('.clear-results').on('click', () => {
-                /* $('.container').empty();
- */         
-            });
+        $('.clear-results').on('click', () => {
+            /* $('.container').empty();
+*/         
         });
+    });
 });
-
