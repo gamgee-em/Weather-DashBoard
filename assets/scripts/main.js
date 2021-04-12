@@ -111,7 +111,12 @@ $(document).ready(() => {
                     console.log(oneCallDailyKey[0].temp.day);
         }; */
         $('.city-5-day').text(userResults);
-        $('.day1-weather').html(`Temps: ${globalOneCallDailyObj[0].temp.day}&degF <br> Humidity: ${globalOneCallDailyObj[0].humidity}`);
+        $('.day0-weather').html(`Temps: ${globalOneCallDailyObj[0].temp.day}&degF <br> Humidity: ${globalOneCallDailyObj[0].humidity}`);
+        $('.day1-weather').html(`Temps: ${globalOneCallDailyObj[1].temp.day}&degF <br> Humidity: ${globalOneCallDailyObj[1].humidity}`);
+        $('.day2-weather').html(`Temps: ${globalOneCallDailyObj[2].temp.day}&degF <br> Humidity: ${globalOneCallDailyObj[2].humidity}`);
+        $('.day3-weather').html(`Temps: ${globalOneCallDailyObj[3].temp.day}&degF <br> Humidity: ${globalOneCallDailyObj[3].humidity}`);
+        $('.day4-weather').html(`Temps: ${globalOneCallDailyObj[4].temp.day}&degF <br> Humidity: ${globalOneCallDailyObj[4].humidity}`);
+
     }
     // ON CLICK search button event
         // get userSearch value for coordsRequest API
