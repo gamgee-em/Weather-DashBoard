@@ -16,9 +16,8 @@ console.log(getDate)
 // doc ready function
 $(document).ready(() => {
     searchResults.append($('<ul>').addClass('list-group list-group-flush saved-search'));
-    
     $('.saved-search').append($('<p>').addClass('list-group-item pl-1 city-name rounded'));
-    $('.city-name').html('Search Results:');
+    $('.saved-search').html('Results:');
 
     // use async await to avoid needing to use mulitple promise chains
     // allows for more concise syntax 😍 
@@ -28,6 +27,7 @@ $(document).ready(() => {
         // combined varibales for single variable call I enjoy this syntax
         const coordsData = await (await fetch(coordsRequest)).json();
         let coords = coordsData.coord;
+        // COORDS OBJ
         let coordsObj = {
             lat: coords.lat,
             lon: coords.lon
@@ -37,55 +37,65 @@ $(document).ready(() => {
         const oneCallRequest = `https://api.openweathermap.org/data/2.5/onecall?lat=${coordsObj.lat}&lon=${coordsObj.lon}&units=imperial&exclude=minutely,hourly&appid=84d61ff029585a95fbd34cf405a10229`;
         const oneCallData = await (await fetch(oneCallRequest)).json();
         // deconstruct 'oneCallCurrentKey' to access the 'current' key in oneCallData
-        const oneCallCurrentKey = oneCallData.current;
         console.log(oneCallData);
+
+        // CURRENT OBJ
+        const oneCallCurrentKey = oneCallData.current;
         const oneCallCurrentObj = {
             windSpeed: oneCallCurrentKey.wind_speed,
             humidity: oneCallCurrentKey.humidity,
             temp: oneCallCurrentKey.temp,
             uvi: oneCallCurrentKey.uvi
         };
-        globaloneCallCurrentObj = oneCallCurrentObj;
         console.log(oneCallCurrentObj);
-
+        
+        // DAILY OBJ
         const oneCallDailyKey = oneCallData.daily;
         const oneCallDailyObj = {
-            humidity: oneCallDailyKey[0].humidity,
-            temp: oneCallDailyKey[0].temp,
-            uvi: oneCallDailyKey[0].uvi
+            humidity: oneCallDailyKey,
         };
-        console.log(oneCallDailyObj.temp);
+        console.log(oneCallDailyKey[0].humidity)
+        console.log(oneCallDailyKey[0].temp.day);
 
         // deconstruct 'oneCallCurrentKey' object to access 'weather' key in oneCallCurrentKey
+        // WEATHER OBJ
         const weatherKey = oneCallCurrentKey.weather[0];
+        console.log(weatherKey)
         const weatherObj = {
             description: weatherKey.description,
             icon: weatherKey.icon,
             main: weatherKey.main
         };
+        console.log(weatherObj);
+
+        // WEATHER
         globalWeatherObj = weatherObj;
-        globaloneCallCurrentObj = oneCallCurrentObj;
-        console.log(globaloneCallCurrentObj)
+        // CURRENT
+        globalOneCallCurrentObj = oneCallCurrentObj;
+        // DAILY
+        globalOneCallDailyObj = oneCallDailyKey;
+
+        console.log(globalOneCallDailyObj)
 
         renderPage()
     };
 
     // build html
     function renderPage() {
-        //save value to localstorage later on
+        // save value to localstorage later on
         // LIST ITEMS
-        $('.city-name').append($('<li>').addClass('list-group-item pl-1 city-name btn bg-secondary rounded').html(userResults));
+        $('.saved-search').append($('<button>').addClass('bg-secondary btn rounded').html(userResults));
         // use toUpperCase on [0] index
-        currentForecast.append($('<ul>').attr({
+        currentForecast.append($('<h6>').attr({
             id: 'current-forecast-list',
             class: 'list-group list-group-flush'
         }));
 
-        //current weather card
+        // current weather card
         $('.current-weather-card').prepend($('<div>').attr('class','card-body card col-12 current-weather-items'));
         $('.current-weather-items').append($('<h4>').attr('class','date').html(getDate));
         //add city to card
-        $('.date').after($('<h6>').attr('class', 'pl-1 image').html(`${userResults}`));
+        $('.date').after($('<h6>').attr('class', 'pl-1 image').html(userResults));
         // add icon to card
         $('.image').append($('<img>').attr({
             class: 'current-weather-icon',
@@ -93,8 +103,15 @@ $(document).ready(() => {
             alt: 'Weather icon representing the current weather'
         }));
         // add weather elements to card
-        $('.image').after($('<p>').attr('class','pl-1').html(`Temp: ${globaloneCallCurrentObj.temp}&degF <br> Humidity: ${globaloneCallCurrentObj.humidity}% <br> Wind Speed: ${globaloneCallCurrentObj.windSpeed}mph <br> UV Index: ${globaloneCallCurrentObj.uvi}`));
+        $('.image').append($('<p>').attr('class','pl-1').html(`Temp: ${globalOneCallCurrentObj.temp}&degF <br> Humidity: ${globalOneCallCurrentObj.humidity}% <br> Wind Speed: ${globalOneCallCurrentObj.windSpeed}mph <br> UV Index: ${globalOneCallCurrentObj.uvi}`));
 
+        // 5 day forcast card
+
+       /*          console.log(oneCallDailyKey[0].humidity)
+                    console.log(oneCallDailyKey[0].temp.day);
+        }; */
+        $('.city-5-day').text(userResults);
+        $('.day1-weather').html(`Temps: ${globalOneCallDailyObj[0].temp.day}&degF <br> Humidity: ${globalOneCallDailyObj[0].humidity}`);
     }
     // ON CLICK search button event
         // get userSearch value for coordsRequest API
