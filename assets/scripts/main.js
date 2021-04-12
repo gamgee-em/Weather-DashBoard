@@ -22,8 +22,8 @@ console.log(getDate)
 $(document).ready(() => {
     //
     $('.saved-search').append($('<p>').addClass('list-group-item pl-1 city-name rounded').html('Search History:'));
-    $('.city-name').after($('<button>').addClass('bg-secondary btn rounded').html(localStorage.getItem('location')));
-
+    $('.city-name').after($('<button>').addClass('bg-secondary btn rounded history-btn').html(localStorage.getItem('location')));
+    let historyBtn = $('history-btn');
     // use async await to avoid needing to use mulitple promise chains
     // allows for more concise syntax 😍 
      async function getCoords(city) {
@@ -91,7 +91,7 @@ $(document).ready(() => {
         // now i need to get local storage and append to
         function setlocalStor(getLocation) {
 
-            if (getLocation == userResults) {
+            if (localStorage.length < 5) {
             localStorage.setItem('location',userResults);
             } else {
                 console.log('hmmm')
@@ -104,7 +104,7 @@ $(document).ready(() => {
         }
         
         getLocalStor();
-        
+
         $('.saved-search').prepend($('<p>').addClass('list-group-item pl-1 city-results rounded').html('Results:'));
         $('.city-results').after($('<button>').addClass('bg-secondary btn rounded').html(userResults));
     
@@ -151,9 +151,12 @@ $(document).ready(() => {
         // call getCoords and pass userInput in as a parameter
         getCoords(userInput);
 
-        $('.clear-results').on('click', () => {
-            /* $('.container').empty();
-*/         
-        });
+        /* $('.clear-results').on('click', () => {
+            $('.container').empty();
+         
+        }); */
     });
+
+
+
 });
