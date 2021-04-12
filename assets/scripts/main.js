@@ -1,20 +1,21 @@
 console.log('js connected');
- 
+// MAIN.JS
 let userSearch = $('#user-search');
 let searchBtn = $('#search-btn');
 searchBtn.addClass('bg-secondary').html('Search');
+searchBtn.after($('<span>').attr('class','btn bg-light clear-results').html('Clear'));
 let currentForecast = $('#current-forecast');
+
 // SEARCH RESULT LIST
 let searchResults = $('#search-results');
 $('.bg-primary').addClass('hide');
-
-let globalWeatherObj;
-let globaloneCallCurrentObj;
 let ulEl = $('<ul>');
 let liEl = $('<li>');
+
 // use moment.js to get current Day/Date/Year/Time
 let getDate = moment().format('LLLL');
 console.log(getDate)
+
 // doc ready function
 $(document).ready(() => {
     searchResults.append($('<ul>').addClass('list-group list-group-flush saved-search'));
@@ -77,16 +78,18 @@ $(document).ready(() => {
         globalOneCallDailyObj = oneCallDailyKey;
 
         console.log(globalOneCallDailyObj)
-
         renderPage()
     };
 
     // build html
     function renderPage() {
-        // save value to localstorage later on
-        // LIST ITEMS
-        $('.saved-search').append($('<button>').addClass('bg-secondary btn rounded').html(userResults));
-        // use toUpperCase on [0] index
+        // LIST ITEMS / HISTORY
+        if (localStorage.length > 0) {
+            console.log('ls present');
+            console.log();
+            $('.saved-search').append($('<button>').addClass('bg-secondary btn rounded').html(userResults));
+        }
+   
         currentForecast.append($('<h6>').attr({
             id: 'current-forecast-list',
             class: 'list-group list-group-flush'
@@ -103,14 +106,11 @@ $(document).ready(() => {
             src: `https://openweathermap.org/img/wn/${globalWeatherObj.icon}.png`,
             alt: 'Weather icon representing the current weather'
         }));
+
         // add weather elements to card
         $('.image').append($('<p>').attr('class','pl-1').html(`Temp: ${globalOneCallCurrentObj.temp}&degF <br> Humidity: ${globalOneCallCurrentObj.humidity}% <br> Wind Speed: ${globalOneCallCurrentObj.windSpeed}mph <br> UV Index: ${globalOneCallCurrentObj.uvi}`));
 
         // 5 day forcast card
-
-       /*          console.log(oneCallDailyKey[0].humidity)
-                    console.log(oneCallDailyKey[0].temp.day);
-        }; */
         $('.city-5-day').text(userResults);
         $('.day0-weather').html(`Temps: ${globalOneCallDailyObj[0].temp.day}&degF <br> Humidity: ${globalOneCallDailyObj[0].humidity}`);
         $('.day1-weather').html(`Temps: ${globalOneCallDailyObj[1].temp.day}&degF <br> Humidity: ${globalOneCallDailyObj[1].humidity}`);
@@ -119,11 +119,16 @@ $(document).ready(() => {
         $('.day4-weather').html(`Temps: ${globalOneCallDailyObj[4].temp.day}&degF <br> Humidity: ${globalOneCallDailyObj[4].humidity}`);
 
     }
-    // ON CLICK search button event
+        // ON CLICK search button event
         // get userSearch value for coordsRequest API
         searchBtn.on('click', () => {
             $('.bg-primary').removeClass('hide');
-
+            
+                let name = $(userSearch).val();
+                console.log(name)
+                
+                localStorage.setItem('location', name);     
+            
             // format user input for url query 
             // make userSearch value all lowercase and trim any white space 
             let userInput = $(userSearch).val().toLowerCase().trim();
@@ -132,14 +137,10 @@ $(document).ready(() => {
             // call getCoords and pass userInput in as a parameter
             getCoords(userInput);
 
-            searchBtn.on('click', () => {
+            $('.clear-results').on('click', () => {
                 /* $('.container').empty();
  */         
             });
         });
-    
-    function getLocalFunc() {
-
-    }
-
 });
+
