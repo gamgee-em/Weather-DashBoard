@@ -6,7 +6,7 @@ searchBtn.addClass('bg-secondary').html('Search');
 let currentForecast = $('#current-forecast');
 // SEARCH RESULT LIST
 let searchResults = $('#search-results');
-$('.5-day-weather-card').addClass('hide');
+$('.bg-primary').addClass('hide');
 
 let globalWeatherObj;
 let globaloneCallCurrentObj;
@@ -122,7 +122,7 @@ $(document).ready(() => {
     // ON CLICK search button event
         // get userSearch value for coordsRequest API
         searchBtn.on('click', () => {
-            $('.5-day-weather-card').removeClass('hide');
+            $('.bg-primary').removeClass('hide');
 
             // format user input for url query 
             // make userSearch value all lowercase and trim any white space 
@@ -133,7 +133,8 @@ $(document).ready(() => {
             getCoords(userInput);
 
             searchBtn.on('click', () => {
-
+                /* $('.container').empty();
+ */         
             });
         });
     

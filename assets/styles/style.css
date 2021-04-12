@@ -1,36 +1,17 @@
-
-
 body {
     background: rgb(172, 183, 189);
-}
-
-.container {
-
-}
-
-/* NAV */
-.search-div {
-    
-}
-
-.user-search {
-
 }
 
 .search-btn {
     cursor: pointer;
 }
 
-
 /* SEARCH RESULTS LIST */
-.search-results {
+/* .search-results {
     list-style: none;
     list-style-position: outside;
-}
-
-/* MAIN */
-.main-container {
-
+} */
+.current-weather-items {
 }
 
 .hide {
