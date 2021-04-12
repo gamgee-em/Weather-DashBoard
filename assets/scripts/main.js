@@ -3,14 +3,14 @@ console.log('js connected');
 let userSearch = $('#user-search');
 let searchBtn = $('#search-btn');
 searchBtn.addClass('bg-secondary').html('Search');
-searchBtn.after($('<span>').attr('class','btn bg-light clear-results').html('Clear'));
+searchBtn.after($('<span>').attr('class','btn bg-primary clear-results').html('Clear'));
 let currentForecast = $('#current-forecast');
 
 // SEARCH RESULT LIST
 let searchResults = $('#search-results');
 searchResults.append($('<ul>').addClass('list-group list-group-flush saved-search'));
 
-$('.bg-primary').addClass('hide');
+$('.text-light').addClass('hide');
 let ulEl = $('<ul>');
 let liEl = $('<li>');
 
@@ -146,8 +146,9 @@ $(document).ready(() => {
     // ON CLICK search button event
     // get userSearch value for coordsRequest API
 
-    searchBtn.on('click', () => {
+    searchBtn.one('click', () => {
         // hide current weather card & 5day forecast 
+      
         $('.bg-primary').removeClass('hide');
 
         // format user input for url query 

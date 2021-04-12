@@ -6,14 +6,6 @@ body {
     cursor: pointer;
 }
 
-/* SEARCH RESULTS LIST */
-/* .search-results {
-    list-style: none;
-    list-style-position: outside;
-} */
-.current-weather-items {
-}
-
 .hide {
     display: none;
 }
