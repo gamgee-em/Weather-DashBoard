@@ -24,7 +24,7 @@ $(document).ready(() => {
     // allows for more concise syntax 😍 
      async function getCoords(city) {
         // concat cityInput w/ obj literal to url query
-        const coordsRequest = `http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=84d61ff029585a95fbd34cf405a10229`;
+        const coordsRequest = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=84d61ff029585a95fbd34cf405a10229`;
         // combined varibales for single variable call I enjoy this syntax
         const coordsData = await (await fetch(coordsRequest)).json();
         let coords = coordsData.coord;
