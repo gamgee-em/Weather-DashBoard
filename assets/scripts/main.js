@@ -13,14 +13,15 @@ let searchResults = $('#search-results');
 let getDate = moment().format('LLLL');
 let userResults = 'Atlanta';
 let userInput;
+let userHistorySearch;
 let searchHistory = [];
 
 // doc ready function
 $(document).ready(() => {
     // append search results as history 
     // if local storage
-    console.log(localStorage)
-    $('.search-history').append($('<span>').attr('class', 'btn-primary').html(location));
+    console.log(localStorage.location)
+    $('.current-city-name').html(userResults);
 
 
     // use async await to avoid needing to use mulitple promise chains
@@ -54,20 +55,14 @@ $(document).ready(() => {
             humidity: oneCallDailyKey,
             icon: oneCallDailyKey
         };
-        console.log(oneCallDailyKey)
-        console.log(oneCallDailyKey[0].humidity)
-        console.log(oneCallDailyKey[0].temp.day);
-
         // deconstruct 'oneCallCurrentKey' object to access 'weather' key in oneCallCurrentKey
         // WEATHER OBJ
         const weatherKey = oneCallCurrentKey.weather[0];
-        console.log(weatherKey)
         const weatherObj = {
             description: weatherKey.description,
             icon: weatherKey.icon,
             main: weatherKey.main
         };
-        console.log(weatherObj);
 
         // WEATHER
         globalWeatherObj = weatherObj;
@@ -81,12 +76,8 @@ $(document).ready(() => {
     getCoords('atlanta');
     // build html
     function renderPage() {
-        // LIST ITEMS / HISTORY
-        // this sets local storage 
-        // now i need to get local storage and append to
         function setlocalStor(getLocation) {
             if (localStorage.length < 5) {
-                
             localStorage.setItem('location',userResults);
             } 
         }
@@ -107,13 +98,11 @@ $(document).ready(() => {
         });
 
         // add weather elements to card
-        $('.current-city-name').html(userResults);
         $('.current-icon').html(userResults);
         $('.current-temp').html(`Temp: ${globalOneCallCurrentObj.temp}&degF`);
         $('.current-humidity').html(`Humidity: ${globalOneCallCurrentObj.humidity}%`);
         $('.current-wind-speed').html(`Wind Speed: ${globalOneCallCurrentObj.windSpeed}mph`);
         $('.current-uvi').html(`Index: ${globalOneCallCurrentObj.uvi.toFixed(1)}`);
-        console.log(typeof(globalOneCallCurrentObj.uvi))
         
         if (globalOneCallCurrentObj.uvi <= 2.99) {
             $('.current-uvi').css('background-color', 'green');
@@ -125,8 +114,6 @@ $(document).ready(() => {
             $('.current-uvi').css('background-color', 'red');
         }
         // 5 day forcast card
-        console.log(globalOneCallDailyObj)
-
         globalOneCallDailyObj.forEach((hour, i) => {
             $(`.day${i}`).html(moment([]).add(i, 'days').format('MM/DD/YY'));
             $(`.icon${i}`).attr('src', `https://openweathermap.org/img/wn/${globalOneCallDailyObj[i].weather[0].icon}@2x.png`);
@@ -147,30 +134,36 @@ $(document).ready(() => {
         // make userSearch value all lowercase and trim any white space 
         // take userInput and capitalize first character for display
         userResults = userInput.charAt(0).toUpperCase().concat(userInput.slice(1));
+        $('.current-city-name').html(userResults);
+
         // call getCoords and pass userInput in as a parameter
 
-        searchHistory.length <= 5 ?
-        searchHistory.push(userResults) :
-        console.log('search history full!')
-
-        searchHistory.forEach((search, i) => { 
-            console.log(search);
-            if (!search.includes(userResults)) $('.search-history').append($('<span>').attr('class', 'btn ').html(search));
-
-        });
-
+        if (!localStorage.location.includes(userResults)) {
+            $('.search-history').append($('<span>').attr({
+                type: 'button',
+                class: 'btn clear-storage history-btn'
+            }).html(localStorage.location));
+        } else {
+            console.log('Already Searched')
+        }
         getCoords(userInput);
     });
 
     //after search clear localstorage
-    $('.clear-results').on('click', () => {
+    $('.clear-results').on('click', (e) => {
+        e.preventDefault();
         localStorage.clear();
+        $('.clear-storage').remove();
     });
 
     // HISTORY BUTTON EVENT
-    $('.history-btn').on('click', function() {
-        userHistory = localStorage.getItem('location');
-        userHistoryResults = userHistory.charAt(0).toUpperCase().concat(userHistory.slice(1));
-        getCoords(userHistory);
+    $('.search-history').on('click', function(e) {
+        e.preventDefault();
+        userHistorySearch = $('.history-btn').html();
+        $('.current-city-name').text(userHistorySearch);
+
+        console.log(userHistorySearch)
+        //userHistoryResults = userHistory.charAt(0).toUpperCase().concat(userHistory.slice(1));
+        getCoords(userHistorySearch);
     });
 });
