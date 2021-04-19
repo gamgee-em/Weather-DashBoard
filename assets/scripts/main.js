@@ -2,35 +2,26 @@ console.log('js connected');
 // MAIN.JS
 let userSearch = $('#user-search');
 let searchBtn = $('#search-btn');
-searchBtn.addClass('bg-secondary').html('Search');
-searchBtn.after($('<span>').attr('class','btn bg-primary clear-results').html('Clear'));
-let currentForecast = $('#current-forecast');
-
-// SEARCH RESULT LIST
-let searchResults = $('#search-results');
-searchResults.append($('<ul>').addClass('list-group list-group-flush saved-search'));
-
-$('.text-light').addClass('hide');
 let ulEl = $('<ul>');
 let liEl = $('<li>');
+let historyBtn = $('history-btn');
+let currentForecast = $('#current-forecast');
+let clearBtn = $('.clear-results');
+let searchResults = $('#search-results');
 
 // use moment.js to get current Day/Date/Year/Time
 let getDate = moment().format('LLLL');
-console.log(getDate)
-
-$('.saved-search').append($('<p>').addClass('list-group-item pl-1 city-name rounded').html('Search History:'));
-
-$('.city-name').after($('<span>').attr({
-    type: 'button',
-    class: 'btn bg-secondary rounded history-btn'
-}).html(localStorage.getItem('location')));
-
-let historyBtn = $('history-btn');
-
+let userResults = 'Atlanta';
+let userInput;
+let searchHistory = [];
 
 // doc ready function
 $(document).ready(() => {
-    
+    // append search results as history 
+    // if local storage
+    console.log(localStorage)
+    $('.search-history').append($('<span>').attr('class', 'btn-primary').html(location[0]));
+
 
     // use async await to avoid needing to use mulitple promise chains
     // allows for more concise syntax 😍 
@@ -45,28 +36,25 @@ $(document).ready(() => {
             lat: coords.lat,
             lon: coords.lon
         };
-        console.log(coordsObj);
-
         const oneCallRequest = `https://api.openweathermap.org/data/2.5/onecall?lat=${coordsObj.lat}&lon=${coordsObj.lon}&units=imperial&exclude=minutely,hourly&appid=84d61ff029585a95fbd34cf405a10229`;
         const oneCallData = await (await fetch(oneCallRequest)).json();
-        // deconstruct 'oneCallCurrentKey' to access the 'current' key in oneCallData
-        console.log(oneCallData);
-
         // CURRENT OBJ
         const oneCallCurrentKey = oneCallData.current;
+        // WINDSPEED / HUMIDITY / TEMP / UVI
         const oneCallCurrentObj = {
             windSpeed: oneCallCurrentKey.wind_speed,
             humidity: oneCallCurrentKey.humidity,
             temp: oneCallCurrentKey.temp,
             uvi: oneCallCurrentKey.uvi
         };
-        console.log(oneCallCurrentObj);
         
         // DAILY OBJ
         const oneCallDailyKey = oneCallData.daily;
         const oneCallDailyObj = {
             humidity: oneCallDailyKey,
+            icon: oneCallDailyKey
         };
+        console.log(oneCallDailyKey)
         console.log(oneCallDailyKey[0].humidity)
         console.log(oneCallDailyKey[0].temp.day);
 
@@ -88,17 +76,15 @@ $(document).ready(() => {
         // DAILY
         globalOneCallDailyObj = oneCallDailyKey;
 
-        console.log(globalOneCallDailyObj)
         renderPage()
     };
-
+    getCoords('atlanta');
     // build html
     function renderPage() {
         // LIST ITEMS / HISTORY
         // this sets local storage 
         // now i need to get local storage and append to
         function setlocalStor(getLocation) {
-
             if (localStorage.length < 2) {
             localStorage.setItem('location',userResults);
             } 
@@ -111,67 +97,78 @@ $(document).ready(() => {
         // call getLocalStor() to update value in search history when user refreshes page
         getLocalStor();
  
-        $('.saved-search').prepend($('<p>').addClass('list-group-item pl-1 city-results rounded').html('Results:'));
-        $('.city-results').after($('<button>').addClass('bg-secondary btn rounded').html(userResults));
-    
-        currentForecast.append($('<h6>').attr({
-            id: 'current-forecast-list',
-            class: 'list-group list-group-flush'
-        }));
-
         // current weather card
-        $('.current-weather-card').prepend($('<div>').attr('class','card-body card col-12 current-weather-items'));
-        $('.current-weather-items').append($('<h4>').attr('class','date').html(getDate));
-        //add city to card
-        $('.date').after($('<h6>').attr('class', 'pl-1 image').html(userResults));
+        // add city to card
         // add icon to card
-        $('.image').append($('<img>').attr({
-            class: 'current-weather-icon',
-            src: `https://openweathermap.org/img/wn/${globalWeatherObj.icon}.png`,
-            alt: 'Weather icon representing the current weather'
-        }));
+        $('.current-icon').attr({
+            src: `https://openweathermap.org/img/wn/${globalWeatherObj.icon}@2x.png`,
+            alt: 'Weather icon representing the current weather conditions'
+        });
 
         // add weather elements to card
-        $('.image').append($('<p>').attr('class','pl-1').html(`Temp: ${globalOneCallCurrentObj.temp}&degF <br> Humidity: ${globalOneCallCurrentObj.humidity}% <br> Wind Speed: ${globalOneCallCurrentObj.windSpeed}mph <br> UV Index: ${globalOneCallCurrentObj.uvi}`));
-
+        $('.current-city-name').html(userResults);
+        $('.current-icon').html(userResults);
+        $('.current-temp').html(`Temp: ${globalOneCallCurrentObj.temp}&degF`);
+        $('.current-humidity').html(`Humidity: ${globalOneCallCurrentObj.humidity}%`);
+        $('.current-wind-speed').html(`Wind Speed: ${globalOneCallCurrentObj.windSpeed}mph`);
+        $('.current-uvi').html(`Index: ${globalOneCallCurrentObj.uvi.toFixed(1)}`);
+        console.log(typeof(globalOneCallCurrentObj.uvi))
+        
+        if (globalOneCallCurrentObj.uvi <= 2.99) {
+            $('.current-uvi').css('background-color', 'green');
+        } else if (globalOneCallCurrentObj.uvi >= 3 && globalOneCallCurrentObj.uvi <= 5.99){
+            $('.current-uvi').css('background-color', 'yellow');
+        } else if (globalOneCallCurrentObj.uvi >= 6 && globalOneCallCurrentObj.uvi <= 7.99) {
+            $('.current-uvi').css('background-color', 'orange');
+        } else {
+            $('.current-uvi').css('background-color', 'red');
+        }
         // 5 day forcast card
-        $('.city-5-day').text(userResults);
-        $('.day0-weather').html(`Temps: ${globalOneCallDailyObj[0].temp.day}&degF <br> Humidity: ${globalOneCallDailyObj[0].humidity}`);
-        $('.day1-weather').html(`Temps: ${globalOneCallDailyObj[1].temp.day}&degF <br> Humidity: ${globalOneCallDailyObj[1].humidity}`);
-        $('.day2-weather').html(`Temps: ${globalOneCallDailyObj[2].temp.day}&degF <br> Humidity: ${globalOneCallDailyObj[2].humidity}`);
-        $('.day3-weather').html(`Temps: ${globalOneCallDailyObj[3].temp.day}&degF <br> Humidity: ${globalOneCallDailyObj[3].humidity}`);
-        $('.day4-weather').html(`Temps: ${globalOneCallDailyObj[4].temp.day}&degF <br> Humidity: ${globalOneCallDailyObj[4].humidity}`);
+        console.log(globalOneCallDailyObj)
 
+        globalOneCallDailyObj.forEach((hour, i) => {
+            $(`.day${i}`).html(moment([]).add(i, 'days').format('MM/DD/YY'));
+            $(`.icon${i}`).attr('src', `https://openweathermap.org/img/wn/${globalOneCallDailyObj[i].weather[0].icon}@2x.png`);
+            $(`.day${i}-temp`).html(`Temps: ${globalOneCallDailyObj[i].temp.day}&degF`);
+            $(`.day${i}-humidity`).html(`Humidity: ${globalOneCallDailyObj[i].humidity}%`);
+        })
+        $('.city-5-day').text(userResults);
     }
     // ON CLICK search button event
     // get userSearch value for coordsRequest API
 
-    searchBtn.one('click', () => {
-        // hide current weather card & 5day forecast 
-      
-        $('.bg-primary').removeClass('hide');
+
+    searchBtn.on('click', (e) => {
+        e.preventDefault();
 
         // format user input for url query 
-        let userInput = $(userSearch).val().toLowerCase().trim();
+        userInput = $(userSearch).val().toLowerCase().trim();
         // make userSearch value all lowercase and trim any white space 
         // take userInput and capitalize first character for display
         userResults = userInput.charAt(0).toUpperCase().concat(userInput.slice(1));
         // call getCoords and pass userInput in as a parameter
+
+        searchHistory.length <= 5 ?
+        searchHistory.push(userResults) :
+        console.log('search history full!')
+
+        searchHistory.forEach((search, i) => { 
+            console.log(search);
+            $('.search-history').append($('<span>').attr('class', 'btn').html(search));
+        });
+
         getCoords(userInput);
     });
 
     //after search clear localstorage
     $('.clear-results').on('click', () => {
         localStorage.clear();
-        $('.history-btn').remove('.history-btn')
     });
 
     // HISTORY BUTTON EVENT
     $('.history-btn').on('click', function() {
-        console.log('clicked history-btn')
-        userInput = localStorage.getItem('location');
-        userResults = userInput.charAt(0).toUpperCase().concat(userInput.slice(1));
-        $('.history-btn').removeClass('hide')
-        getCoords(userInput);
+        userHistory = localStorage.getItem('location');
+        userHistoryResults = userHistory.charAt(0).toUpperCase().concat(userHistory.slice(1));
+        getCoords(userHistory);
     });
 });

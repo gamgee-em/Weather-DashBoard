@@ -6,6 +6,23 @@ body {
     cursor: pointer;
 }
 
+p {
+    margin: 0;
+}
+
+.current-uvi {
+    min-width: 20px;
+    max-width: 110px;
+}
+
+img {
+    height: auto;
+}
+
 .hide {
     display: none;
 }
+
+.wow {
+    visibility: hidden;
+  }
