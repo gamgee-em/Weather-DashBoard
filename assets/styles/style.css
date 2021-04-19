@@ -1,7 +1,3 @@
-body {
-    background: rgb(172, 183, 189);
-}
-
 .search-btn {
     cursor: pointer;
 }
@@ -15,14 +11,16 @@ p {
     max-width: 110px;
 }
 
-img {
-    height: auto;
+.current-city-name, .city-5-day {
+    height: 10%;
+    width: auto;
+    align-self: center;
+}
+.current-icon, .icon0, .icon1, .icon2
+, .icon3, .icon4 {
+    width: auto;
 }
 
 .hide {
     display: none;
 }
-
-.wow {
-    visibility: hidden;
-  }

@@ -20,7 +20,7 @@ $(document).ready(() => {
     // append search results as history 
     // if local storage
     console.log(localStorage)
-    $('.search-history').append($('<span>').attr('class', 'btn-primary').html(location[0]));
+    $('.search-history').append($('<span>').attr('class', 'btn-primary').html(location));
 
 
     // use async await to avoid needing to use mulitple promise chains
@@ -85,7 +85,8 @@ $(document).ready(() => {
         // this sets local storage 
         // now i need to get local storage and append to
         function setlocalStor(getLocation) {
-            if (localStorage.length < 2) {
+            if (localStorage.length < 5) {
+                
             localStorage.setItem('location',userResults);
             } 
         }
@@ -154,7 +155,8 @@ $(document).ready(() => {
 
         searchHistory.forEach((search, i) => { 
             console.log(search);
-            $('.search-history').append($('<span>').attr('class', 'btn').html(search));
+            if (!search.includes(userResults)) $('.search-history').append($('<span>').attr('class', 'btn ').html(search));
+
         });
 
         getCoords(userInput);

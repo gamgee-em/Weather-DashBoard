@@ -20,7 +20,7 @@
 </head>
     <!-- BODY -->
 <body>
-    <div class="container mt-3 justify-content-center rounded">
+    <div class="container justify-content-center rounded">
         <div class='row'>
             <div class="col-4 bg-light p-3 card card-body">
                 <h4>Search for a City:</h4> 
@@ -34,14 +34,16 @@
                 </div>
                 <!-- SEARCH-RESULTS -->
                 <h5 class='pt-2 search-history'>Search History:</h5>
-                <span type='button' id='search-btn' class="input-group-text">Clear History</span>
+                <span type='button' id='search-btn' class="input-group-text clear-results">Clear History</span>
             </div>
                 <!-- CURRENT WEATHER CARD -->
-            <div class="col-8 weather-card">
-                <div class="row card card-body rounded current-weather-card">
+            <div class="col-7 weather-card">
+                <div class="row card-body rounded current-weather-card">
                     <h5 class='current-day'>4/19/21</h5>
-                    <h6 class="mt-2 mb-1 current-city-name"></h6>
-                    <img class='current-icon w-25'/>
+                    <div class='row d-flex'>
+                        <h6 class="col-4 current-city-name"></h6>
+                        <img class='current-icon'/>
+                    </div>
                     <p class="current-temp"></p>
                     <p class="current-humidity"></p>
                     <p class="current-wind-speed"></p>
@@ -50,49 +52,59 @@
 
             <!-- 5 DAY FORECAST -->
                 
-                <div class="card card-body row rounded text-light bg-primary">
-                    <h5 class="day1"></h5>
-                    <h6 class="mt-2 mb-1 city-5-day"></h6>
-                    <img class='icon0 w-25 image'/>
+                <div class="row card-body rounded text-light bg-primary">
+                    <h5 class="day0"></h5>
+                    <div class='row d-flex'>
+                        <h6 class="col-4 city-5-day"></h6>
+                        <img class='icon0'/>
+                    </div>
                     <p class="day0-temp"></p>
                     <p class="day0-humidity"></p>
                 </div>
                 <div class="row">
-                    <div class="card-body col-6 rounded text-light bg-primary">
+                    <div class="card-body col-5 rounded text-light bg-primary">
                         <h5 class="day1"></h5>
-                        <h6 class="mt-2 mb-1 city-5-day"></h6>
-                        <img class="icon1"/>
+                        <div class='row d-flex'>
+                            <h6 class="col-4 city-5-day"></h6>
+                            <img class="icon1"/>
+                        </div>
+                        
                         <p class="day1-temp"></p>
                         <p class="day1-humidity"></p>
                     </div>
 
-                    <div class="card-body col-6 rounded text-light bg-primary">
+                    <div class="card-body col-5 rounded text-light bg-primary">
                         <h5 class ='day2'></h5>
-                        <h6 class="mt-2 mb-1 city-5-day"></h6>
-                        <img class='icon2'/>
+                        <div class='row d-flex'>
+                            <h6 class="col-4 city-5-day"></h6>
+                            <img class='icon2'/>
+                        </div>
                         <p class="day2-temp"></p>
                         <p class="day2-humidity"></p>
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="card-body col-6 rounded text-light bg-primary">
+                    <div class="card-body col-5 rounded text-light bg-primary">
                         <h5 class ='day3'></h5>
-                        <h6 class="mt-2 mb-1 city-5-day"></h6>
-                        <img class='icon3'/>
+                        <div class='row d-flex'>
+                            <h6 class="col-4 city-5-day"></h6>
+                            <img class='icon3'/>
+                        </div>
                         <p class="day3-temp"></p>
                         <p class="day3-humidity"></p>
                     </div>
                     
-                    <div class="card-body col-6 rounded text-light bg-primary">
+                    <div class="card-body col-5 rounded text-light bg-primary">
                         <h5 class ='day4'></h5>
-                        <h6 class="mt-2 mb-1 city-5-day"></h6>
-                        <img class='icon4'/>
+                        <div class='row d-flex'>
+                            <h6 class="col-4 city-5-day"></h6>
+                            <img class='icon4'/>
+                        </div>
                         <p class="day4-temp"></p>
                         <p class="day4-humidity"></p>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
