@@ -31,4 +31,4 @@
 ![Mobile-View](https://user-images.githubusercontent.com/56444674/114442042-1a184880-9b9a-11eb-8cff-2359d11f9b0a.png)
 
 ## __Deployed Application__
-<a href='https://samsweig.github.io/Weather-DashBoard/' target='_blank'> Weather Dashboard </a>
+<a href='https://gamgee-em.github.io/Weather-DashBoard/' target='_blank'> Weather Dashboard </a>
