@@ -10,9 +10,8 @@ let clearBtn = $('.clear-results');
 let searchResults = $('#search-results');
 
 // use moment.js to get current Day/Date/Year/Time
-let getDate = moment().format('LLLL');
+let getDate =  moment().format('LLLL');
 let userResults = 'Atlanta';
-let userInput;
 let userHistorySearch;
 let searchHistory = [];
 
@@ -22,6 +21,10 @@ $(document).ready(() => {
     // if local storage
     console.log(localStorage.location)
     $('.current-city-name').html(userResults);
+
+    if (localStorage) $('.search-history').append($('<br><span>')
+    .attr('class', 'btn rounded history-list')
+    .html(localStorage.location.value));
 
 
     // use async await to avoid needing to use mulitple promise chains
@@ -76,18 +79,7 @@ $(document).ready(() => {
     getCoords('atlanta');
     // build html
     function renderPage() {
-        function setlocalStor(getLocation) {
-            if (localStorage.length < 5) {
-            localStorage.setItem('location',userResults);
-            } 
-        }
-        
-        function getLocalStor() {
-            const getLocation = localStorage.getItem('location')
-            setlocalStor(getLocation);
-         }
-        // call getLocalStor() to update value in search history when user refreshes page
-        getLocalStor();
+   
  
         // current weather card
         // add city to card
@@ -102,7 +94,7 @@ $(document).ready(() => {
         $('.current-temp').html(`Temp: ${globalOneCallCurrentObj.temp}&degF`);
         $('.current-humidity').html(`Humidity: ${globalOneCallCurrentObj.humidity}%`);
         $('.current-wind-speed').html(`Wind Speed: ${globalOneCallCurrentObj.windSpeed}mph`);
-        $('.current-uvi').html(`Index: ${globalOneCallCurrentObj.uvi.toFixed(1)}`);
+        $('.current-uvi').html(`UVI: ${globalOneCallCurrentObj.uvi.toFixed(1)}`);
         
         if (globalOneCallCurrentObj.uvi <= 2.99) {
             $('.current-uvi').css('background-color', 'green');
@@ -130,22 +122,33 @@ $(document).ready(() => {
         e.preventDefault();
 
         // format user input for url query 
-        userInput = $(userSearch).val().toLowerCase().trim();
+        const userInput = $(userSearch).val().toLowerCase().trim();
         // make userSearch value all lowercase and trim any white space 
         // take userInput and capitalize first character for display
         userResults = userInput.charAt(0).toUpperCase().concat(userInput.slice(1));
-        $('.current-city-name').html(userResults);
 
-        // call getCoords and pass userInput in as a parameter
-
-        if (!localStorage.location.includes(userResults)) {
-            $('.search-history').append($('<span>').attr({
-                type: 'button',
-                class: 'btn clear-storage history-btn'
-            }).html(localStorage.location));
-        } else {
-            console.log('Already Searched')
+        searchHistory.push(userInput);
+        console.log(userInput)
+        console.log(localStorage.location)
+        if (searchHistory.length < 3) {
+        $('.current-city-name').html(userResults)
+        $('.search-history').append($('<br><span>').html(searchHistory[searchHistory.length - 1])
+        .attr('class', 'btn rounded history-list'));
         }
+
+        function setlocalStor(getLocation) {
+            if (localStorage.length < 5) {
+            localStorage.setItem('location',userResults);
+            } 
+        }
+        
+        function getLocalStor() {
+            const getLocation = localStorage.getItem('location')
+            setlocalStor(getLocation);
+         }
+        // call getLocalStor() to update value in search history when user refreshes page
+        getLocalStor();
+        // call getCoords and pass userInput in as a parameter
         getCoords(userInput);
     });
 
@@ -153,17 +156,17 @@ $(document).ready(() => {
     $('.clear-results').on('click', (e) => {
         e.preventDefault();
         localStorage.clear();
-        $('.clear-storage').remove();
+
+        $('.search-history').empty();
+
     });
 
     // HISTORY BUTTON EVENT
     $('.search-history').on('click', function(e) {
         e.preventDefault();
-        userHistorySearch = $('.history-btn').html();
-        $('.current-city-name').text(userHistorySearch);
-
-        console.log(userHistorySearch)
-        //userHistoryResults = userHistory.charAt(0).toUpperCase().concat(userHistory.slice(1));
-        getCoords(userHistorySearch);
+        console.log(searchHistory)
+        let historyRequest = $('.search-history').val;
+        console.log(historyRequest);
+        getCoords(searchHistory);
     });
 });

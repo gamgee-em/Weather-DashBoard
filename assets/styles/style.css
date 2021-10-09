@@ -6,9 +6,17 @@ p {
     margin: 0;
 }
 
+.search-btn {
+    border-radius: 10px;
+}
+
 .current-uvi {
-    min-width: 20px;
-    max-width: 110px;
+    min-width: 35px;
+    max-width: 75px;
+    padding: 4px;
+    margin: 0 0 0 12px;
+    border-radius: 5px;
+    color: grey;
 }
 
 .current-city-name, .city-5-day {
@@ -24,3 +32,12 @@ p {
 .hide {
     display: none;
 }
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+.history-list:hover {
+    background-color: orange;
+}
+
